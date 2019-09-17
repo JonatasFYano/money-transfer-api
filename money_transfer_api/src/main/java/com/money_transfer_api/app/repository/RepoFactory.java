@@ -12,7 +12,6 @@ public abstract class RepoFactory {
 
 		switch (factoryCode) {
 		case H2:
-		System.out.println("Hi");
 			return new H2DataFactory();
 		default:
 			// by default using H2 in memory database

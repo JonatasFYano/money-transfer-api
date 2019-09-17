@@ -15,9 +15,8 @@ public class ApplicationConfig {
 
 	public static void main(String[] args) throws Exception {
 		H2DataFactory h2DataFactory = new H2DataFactory();
-		h2DataFactory.populateTestData();
+		h2DataFactory.populateInicialData();
 		// Host service on jetty
-        System.out.println("Hi");
 		startService();
 	}
 

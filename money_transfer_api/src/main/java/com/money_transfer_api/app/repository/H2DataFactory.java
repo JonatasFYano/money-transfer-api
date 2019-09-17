@@ -49,11 +49,11 @@ public class H2DataFactory extends RepoFactory {
         return value;
 	}
 	
-	public void populateTestData() {
+	public void populateInicialData() {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			RunScript.execute(conn, new FileReader("src/test/resources/demo.sql"));
+			RunScript.execute(conn, new FileReader("src/main/resources/demo.sql"));
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} catch (FileNotFoundException e) {

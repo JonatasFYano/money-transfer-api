@@ -17,9 +17,10 @@ import java.util.List;
 
 public class AccountRepository{
 
-    private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (UserName, Balance, CurrencyCode) VALUES (?, ?, ?)";
+    private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (UserName, TotalBalance, Currency) VALUES (?, ?, ?)";
+    private final static String SQL_GET_ACC_BY_ID = "SELECT * FROM Account";
 
-    public long createAccount(AccountModel account) throws MessageException { 
+    public long createAccount(AccountModel account) throws MessageException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet generatedKeys = null;
@@ -46,4 +47,34 @@ public class AccountRepository{
             DbUtils.closeQuietly(conn, stmt, generatedKeys);
         }
     }
+
+
+    public List<AccountModel> getAllAccounts() throws MessageException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        List<AccountModel> accounts = new ArrayList<AccountModel>();
+        try {
+            conn = H2DataFactory.getConnection();
+            stmt = conn.prepareStatement(SQL_GET_ACC_BY_ID);
+            resultSet = stmt.executeQuery();
+            // System.out.println(resultSet.getLong("AccountId") + "*********resultSet.getLong(AccountId)***********");
+            while (resultSet.next()) {
+// System.out.println(resultSet.getLong("AccountId") + resultSet.getString("UserName") + resultSet.getBigDecimal("TotalBalance") + resultSet.getString("Currency"));
+
+				AccountModel account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"),
+                        resultSet.getString("Currency"));
+                
+                accounts.add(account);
+            }
+			return accounts;
+		} catch (SQLException e) {
+            System.out.println(e);
+			throw new MessageException("getAccountById(): Error reading account data", e);
+		} finally {
+			DbUtils.closeQuietly(conn, stmt, resultSet);
+		}
+    }
+
+
 }
