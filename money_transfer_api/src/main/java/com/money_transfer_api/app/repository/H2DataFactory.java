@@ -22,15 +22,14 @@ public class H2DataFactory extends RepoFactory {
 
 	private static Properties properties = new Properties();
 
-	private static final String h2_driver = getStringProperty("h2_driver");
-	private static final String h2_connection_url = getStringProperty("h2_connection_url");
-	private static final String h2_user = getStringProperty("h2_user");
-	private static final String h2_password = getStringProperty("h2_password");
+	private static final String h2_driver = "org.h2.Driver";
+	private static final String h2_connection_url = "jdbc:h2:mem:moneyapp;DB_CLOSE_DELAY=-1";
+	private static final String h2_user = "sa";
+	private static final String h2_password = "sa";
 
 	private final AccountService accountService = new AccountService();
 
-	H2DataFactory() {
-		// init: load driver
+	public H2DataFactory() {
 		DbUtils.loadDriver(h2_driver);
 	}
 
@@ -48,6 +47,20 @@ public class H2DataFactory extends RepoFactory {
             value = System.getProperty(key);
         }
         return value;
-    }
+	}
+	
+	public void populateTestData() {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			RunScript.execute(conn, new FileReader("src/test/resources/demo.sql"));
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} finally {
+			DbUtils.closeQuietly(conn);
+		}
+	}
 
 }
