@@ -50,6 +50,7 @@ public class TestTransactionService extends TestService{
         HttpResponse response = client.execute(request);
 
         int statusCode = response.getStatusLine().getStatusCode();
+
         assertTrue(statusCode == 200);
 
         String jsonString = EntityUtils.toString(response.getEntity());
@@ -130,7 +131,7 @@ public class TestTransactionService extends TestService{
         HttpResponse response = client.execute(request);
 
         int statusCode = response.getStatusLine().getStatusCode();
-        assertTrue(statusCode == 500);
+        assertTrue(statusCode == 400);
     }
 
 

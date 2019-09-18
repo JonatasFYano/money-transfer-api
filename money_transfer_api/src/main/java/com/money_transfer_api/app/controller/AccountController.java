@@ -5,9 +5,17 @@ import org.apache.log4j.Logger;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 import com.money_transfer_api.app.model.AccountModel;
 import com.money_transfer_api.app.model.MovementAccountModel;
@@ -25,42 +33,64 @@ import java.util.List;
 public class AccountController {
 
     AccountService accountService = new AccountService();
+    public ObjectMapper mapper = new ObjectMapper();
 
 
     @POST
     @Path("/create")
-    public long createAccount(AccountModel account) throws MessageException {
+    public Response createAccount(AccountModel account) throws MessageException, URISyntaxException {
+
         long accountId = accountService.createAccount(account);
-        return accountId;
+        URI u = new URI("localhost:8001");
+        return Response.created(u).build();
     }
 
     @GET
     @Path("/")
-    public List<AccountModel> getAllAccounts() throws MessageException {
+    public Response getAllAccounts() throws MessageException, URISyntaxException, IOException {
         List<AccountModel> accounts = accountService.getAllAccounts();
-        return accounts;
+        if(accounts == null || accounts.size() == 0){
+            return Response.noContent().build();
+        }
+        else{
+            String jsonResult = mapper.writeValueAsString(accounts);
+            return Response.ok(jsonResult).build();
+        }
     }
 
     @GET
     @Path("/{UsernameAccount}")
-    public AccountModel getAccount(@PathParam("UsernameAccount") String userNameAccount) throws MessageException {
+    public Response getAccount(@PathParam("UsernameAccount") String userNameAccount) throws MessageException, URISyntaxException, IOException {
         AccountModel account = accountService.getAccount(userNameAccount);
-        return account;
+        if(account == null){
+            return Response.noContent().build();
+        }else{
+            String jsonResult = mapper.writeValueAsString(account);
+            return Response.ok(jsonResult).build();
+        }
     }
 
     @PUT
     @Path("/{UsernameAccount}/deposit")
-    public AccountModel deposit(@PathParam("UsernameAccount") String userNameAccount, 
-                                        MovementAccountModel movementAccountModel) throws MessageException {
+    public Response deposit(@PathParam("UsernameAccount") String userNameAccount, 
+                                        MovementAccountModel movementAccountModel) throws MessageException, URISyntaxException, IOException {
         AccountModel account = accountService.deposit(userNameAccount, movementAccountModel);
-        return account;
+        if(account == null){
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        String jsonResult = mapper.writeValueAsString(account);
+        return Response.ok(jsonResult).build();
     }
 
     @PUT
     @Path("/{UsernameAccount}/withdraw")
-    public AccountModel withdraw(@PathParam("UsernameAccount") String userNameAccount, 
-                                        MovementAccountModel movementAccountModel) throws MessageException {
+    public Response withdraw(@PathParam("UsernameAccount") String userNameAccount, 
+                                        MovementAccountModel movementAccountModel) throws MessageException, URISyntaxException, IOException {
         AccountModel account = accountService.withdraw(userNameAccount, movementAccountModel);
-        return account;
+        if(account == null){
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        String jsonResult = mapper.writeValueAsString(account);
+        return Response.ok(jsonResult).build();
     }
 }

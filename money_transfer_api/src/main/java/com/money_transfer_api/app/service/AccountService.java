@@ -52,6 +52,9 @@ public class AccountService{
 	public AccountModel deposit(String userNameAccount, MovementAccountModel movementAccountModel) throws MessageException{
 		try{
 			AccountModel accountUser = getAccount(userNameAccount);
+			if(accountUser == null){
+				return null;
+			}
 			BigDecimal totalAmountUser = accountUser.getTotalBalance();
 			BigDecimal newBalance = totalAmountUser.add(movementAccountModel.getAmount());
 
@@ -66,6 +69,9 @@ public class AccountService{
 	public AccountModel withdraw(String userNameAccount, MovementAccountModel movementAccountModel) throws MessageException{
 		try{
 			AccountModel accountUser = getAccount(userNameAccount);
+			if(accountUser == null){
+				return null;
+			}
 			BigDecimal totalAmountUser = accountUser.getTotalBalance();
 			BigDecimal newBalance = totalAmountUser.subtract(movementAccountModel.getAmount());
 
