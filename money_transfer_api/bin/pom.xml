@@ -114,7 +114,7 @@
         </resources>
         <plugins>
            
-           <plugin>
+           <!-- <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -134,7 +134,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -158,6 +158,23 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.6.0.1398</version>
             </plugin>
+            <!-- <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+                <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>single</goal>
+                </goals>
+                <configuration>
+                    <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                </execution>
+            </executions>
+            </plugin> -->
         </plugins>
     </build>
 </project>

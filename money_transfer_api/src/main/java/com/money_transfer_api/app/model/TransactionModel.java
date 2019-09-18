@@ -18,7 +18,7 @@ public class TransactionModel {
 	public TransactionModel() {
 	}
 
-	public TransactionModel(String currencyCode, BigDecimal amount, String fromAccountUsername, String toAccountUsername) {
+	public TransactionModel(BigDecimal amount, String fromAccountUsername, String toAccountUsername) {
 		this.amount = amount;
 		this.fromAccountUsername = fromAccountUsername;
 		this.toAccountUsername = toAccountUsername;

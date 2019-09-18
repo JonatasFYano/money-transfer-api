@@ -1,4 +1,4 @@
-package com.money_transfer_api.app.service;
+package com.money_transfer_api.app.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
