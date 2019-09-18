@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JonatasFYano/money-transfer-api.svg?branch=master)](https://travis-ci.org/JonatasFYano/money-transfer-api) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JonatasFYano_money-transfer-api&metric=alert_status)](https://sonarcloud.io/dashboard?id=JonatasFYano_money-transfer-api)
+
 # Akelius Code Challenge
 
 This is a Code Challenge for Akelius. The purpose of this challenge is to **design** and **create** a simple implementation of a RESTful API that can perform money transfers between user accounts, assuming the API is invoked by multiple systems and services on behalf of end users. 
