@@ -1,0 +1,17 @@
+language: java
+
+jdk:
+ - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+jobs:
+  include:
+    - stage: build
+      script: mvn clean install -f money_transfer_api/ -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    - stage: test
+      script: mvn clean test -f money_transfer_api/
+    - stage: static analysis
+      script: mvn sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=money-transfer-api -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -f money_transfer_api/
