@@ -21,8 +21,8 @@ public class AccountService{
 	 */
 	public long createAccount(AccountModel account) throws MessageException{
 		try{
-			long idKey = accountRepository.createAccount(account);
-			return idKey;
+			return accountRepository.createAccount(account);
+			
 		}catch(Exception e){
 			System.out.println(e);
 			return 0;
@@ -31,8 +31,8 @@ public class AccountService{
 
 	public List<AccountModel> getAllAccounts() throws MessageException{
 		try{
-			List<AccountModel> userAccounts = accountRepository.getAllAccounts();
-			return userAccounts;
+			return accountRepository.getAllAccounts();
+
 		}catch(Exception e){
 			System.out.println(e);
 			return null;
@@ -41,8 +41,8 @@ public class AccountService{
 	
 	public AccountModel getAccount(String userNameAccount) throws MessageException{
 		try{
-			AccountModel account = accountRepository.getAccount(userNameAccount);
-			return account;
+			return accountRepository.getAccount(userNameAccount);
+
 		}catch(Exception e){
 			System.out.println(e);
 			return null;
@@ -55,8 +55,8 @@ public class AccountService{
 			BigDecimal totalAmountUser = accountUser.getTotalBalance();
 			BigDecimal newBalance = totalAmountUser.add(movementAccountModel.getAmount());
 
-			AccountModel account = accountRepository.updateTotalBalance(userNameAccount, newBalance);
-			return account;
+			return accountRepository.updateTotalBalance(userNameAccount, newBalance);
+
 		}catch(Exception e){
 			System.out.println(e);
 			throw new MessageException("deposit(): Error when depositing to user: " + userNameAccount, e);
@@ -73,8 +73,8 @@ public class AccountService{
 				throw new MessageException("withdraw(): Error when withdrawing from user - Not sufficient Fund for account");
 			}
 
-			AccountModel account = accountRepository.updateTotalBalance(userNameAccount, newBalance);
-			return account;
+			return accountRepository.updateTotalBalance(userNameAccount, newBalance);
+
 		}catch(Exception e){
 			System.out.println(e);
 			throw new MessageException("withdraw(): Error when withdrawing from user: " + userNameAccount, e);

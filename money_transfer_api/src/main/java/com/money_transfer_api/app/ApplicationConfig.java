@@ -1,6 +1,7 @@
 package com.money_transfer_api.app;
 
 import com.money_transfer_api.app.controller.AccountController;
+import com.money_transfer_api.app.controller.TransactionController;
 import com.money_transfer_api.app.repository.H2DataFactory;
 
 import org.eclipse.jetty.server.Server;
@@ -27,7 +28,7 @@ public class ApplicationConfig {
 		server.setHandler(context);
 		ServletHolder servletHolder = context.addServlet(ServletContainer.class, "/*");
 		servletHolder.setInitParameter("jersey.config.server.provider.classnames",
-                AccountController.class.getCanonicalName());
+                AccountController.class.getCanonicalName() + "," + TransactionController.class.getCanonicalName());
 		try {
 			server.start();
 			server.join();

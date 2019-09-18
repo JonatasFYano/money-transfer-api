@@ -21,7 +21,7 @@ public class AccountRepository{
     private final static String SQL_GET_ACC = "SELECT * FROM Account";
     private final static String SQL_GET_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ?";
     private final static String SQL_UPDATE_ACC_BALANCE = "UPDATE Account SET TotalBalance = ? WHERE UserName = ? ";
-    private final static String SQL_LOCK_ACC_BY_ID = "SELECT * FROM Account WHERE AccountId = ? FOR UPDATE";
+    private final static String SQL_LOCK_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ? FOR UPDATE";
 
 
     public long createAccount(AccountModel account) throws MessageException {
@@ -88,7 +88,6 @@ public class AccountRepository{
             stmt.setString(1, userNameAccount);
             resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                System.out.println(resultSet);
 				account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"));
             }
 			return account;
@@ -107,25 +106,18 @@ public class AccountRepository{
 		ResultSet resultSet = null;
         int updateCount = -1;
         AccountModel account = null;
-
 		try {
-
 			conn = H2DataFactory.getConnection();
 			stmt = conn.prepareStatement(SQL_UPDATE_ACC_BALANCE);
 			stmt.setBigDecimal(1, amount);
 			stmt.setString(2, userNameAccount);
             updateCount = stmt.executeUpdate();
-            System.out.println(updateCount);
             conn.commit();
-            
 
-            stmt = conn.prepareStatement(SQL_GET_ACC_BY_ID);
-			stmt.setString(1, userNameAccount);
-            resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-				account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"));
-            }
-			return account;
+            account = getAccount(userNameAccount);
+
+            return account;
+            
 		}  catch (SQLException e) {
             System.out.println(e);
 			throw new MessageException("getAccountById(): Error reading account data", e);
@@ -135,6 +127,82 @@ public class AccountRepository{
 			DbUtils.closeQuietly(stmt);
 		}
     }
+    
+    
+    public List<AccountModel> transaction(String userNameAccountFrom, String userNameAccountTo, BigDecimal amount) throws MessageException {
+		int result = -1;
+		Connection conn = null;
+		PreparedStatement lockStmt = null;
+		PreparedStatement updateStmt = null;
+		ResultSet rs = null;
+		AccountModel fromAccount = null;
+        AccountModel toAccount = null;
+        List<AccountModel> accounts = new ArrayList<AccountModel>();
 
+		try {
+			conn = H2DataFactory.getConnection();
+			conn.setAutoCommit(false);
+			// lock the credit and debit account for writing:
+			lockStmt = conn.prepareStatement(SQL_LOCK_ACC_BY_ID);
+			lockStmt.setString(1, userNameAccountFrom);
+			rs = lockStmt.executeQuery();
+			if (rs.next()) {
+				fromAccount = new AccountModel(rs.getLong("AccountId"), rs.getString("UserName"),
+						rs.getBigDecimal("TotalBalance"));
+            }
+            
+			lockStmt = conn.prepareStatement(SQL_LOCK_ACC_BY_ID);
+			lockStmt.setString(1, userNameAccountTo);
+			rs = lockStmt.executeQuery();
+			if (rs.next()) {
+                toAccount = new AccountModel(rs.getLong("AccountId"), rs.getString("UserName"),
+                        rs.getBigDecimal("TotalBalance"));
+			}
+			// check locking status
+			if (fromAccount == null || toAccount == null) {
+				throw new MessageException("Fail to lock both accounts for write");
+			}
 
+			// check enough fund in source account
+			BigDecimal fromAccountLeftOver = fromAccount.getTotalBalance().subtract(amount);
+			if (fromAccountLeftOver.compareTo(BigDecimal.ZERO) < 0) {
+				throw new MessageException("Not enough Fund from source Account ");
+            }
+            
+			// proceed with update
+			updateStmt = conn.prepareStatement(SQL_UPDATE_ACC_BALANCE);
+			updateStmt.setBigDecimal(1, fromAccountLeftOver);
+			updateStmt.setString(2, userNameAccountFrom);
+			updateStmt.addBatch();
+			updateStmt.setBigDecimal(1, toAccount.getTotalBalance().add(amount));
+			updateStmt.setString(2, userNameAccountTo);
+			updateStmt.addBatch();
+			int[] rowsUpdated = updateStmt.executeBatch();
+            result = rowsUpdated[0] + rowsUpdated[1];
+			if(result < 2){
+                throw new MessageException("Only one account has changed ");
+            }
+            conn.commit();
+            
+            fromAccount = getAccount(userNameAccountFrom);
+            toAccount = getAccount(userNameAccountTo);
+
+            accounts.add(fromAccount);
+            accounts.add(toAccount);
+		} catch (SQLException se) {
+			// rollback transaction if exception occurs
+			try {
+				if (conn != null)
+					conn.rollback();
+			} catch (SQLException re) {
+				throw new MessageException("Fail to rollback transaction", re);
+			}
+		} finally {
+			DbUtils.closeQuietly(conn);
+			DbUtils.closeQuietly(rs);
+			DbUtils.closeQuietly(lockStmt);
+			DbUtils.closeQuietly(updateStmt);
+        }
+        return accounts;
+    }
 }
