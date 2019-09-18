@@ -12,14 +12,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import java.util.Properties;
-
 /**
  * H2 DAO
  */
 public class H2DataFactory{
-
-	private static Properties properties = new Properties();
 
 	private static final String h2_driver = "org.h2.Driver";
 	private static final String h2_connection_url = "jdbc:h2:mem:moneyapp;DB_CLOSE_DELAY=-1";
