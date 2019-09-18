@@ -15,3 +15,9 @@ jobs:
       script: mvn clean test -f money_transfer_api/
     - stage: static analysis
       script: mvn sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=money-transfer-api -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN -f money_transfer_api/
+    - stage: build_image
+      script: docker build -t jonatasfyano/money-transfer-api . 
+    - stage: push_image_to_dockerhub
+      script: 
+        - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS 
+        - docker push jonatasfyano/money-transfer-api:latest 
