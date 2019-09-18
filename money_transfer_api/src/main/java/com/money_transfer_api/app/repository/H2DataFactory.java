@@ -1,6 +1,5 @@
 package com.money_transfer_api.app.repository;
 
-import com.money_transfer_api.app.repository.RepoFactory;
 import com.money_transfer_api.app.service.AccountService;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -18,7 +17,7 @@ import java.util.Properties;
 /**
  * H2 DAO
  */
-public class H2DataFactory extends RepoFactory {
+public class H2DataFactory{
 
 	private static Properties properties = new Properties();
 
@@ -35,18 +34,6 @@ public class H2DataFactory extends RepoFactory {
 
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(h2_connection_url, h2_user, h2_password);
-	}
-
-	public AccountService getAccountService() {
-		return accountService;
-	}
-
-	public static String getStringProperty(String key) {
-        String value = properties.getProperty(key);
-        if (value == null) {
-            value = System.getProperty(key);
-        }
-        return value;
 	}
 	
 	public void populateInicialData() {

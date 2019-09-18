@@ -141,6 +141,11 @@
                     <mainClass>com.money_transfer_api.app.ApplicationConfig</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.6.0.1398</version>
+            </plugin>
         </plugins>
     </build>
 </project>

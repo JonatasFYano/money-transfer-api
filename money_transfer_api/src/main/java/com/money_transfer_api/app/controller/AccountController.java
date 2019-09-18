@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import com.money_transfer_api.app.model.AccountModel;
+import com.money_transfer_api.app.model.MovementAccountModel;
 import com.money_transfer_api.app.service.AccountService;
 import com.money_transfer_api.app.exception.MessageException;
 
@@ -38,5 +39,28 @@ public class AccountController {
     public List<AccountModel> getAllAccounts() throws MessageException {
         List<AccountModel> accounts = accountService.getAllAccounts();
         return accounts;
+    }
+
+    @GET
+    @Path("/{UsernameAccount}")
+    public AccountModel getAccount(@PathParam("UsernameAccount") String userNameAccount) throws MessageException {
+        AccountModel account = accountService.getAccount(userNameAccount);
+        return account;
+    }
+
+    @PUT
+    @Path("/{UsernameAccount}/deposit")
+    public AccountModel deposit(@PathParam("UsernameAccount") String userNameAccount, 
+                                        MovementAccountModel movementAccountModel) throws MessageException {
+        AccountModel account = accountService.deposit(userNameAccount, movementAccountModel);
+        return account;
+    }
+
+    @PUT
+    @Path("/{UsernameAccount}/withdraw")
+    public AccountModel withdraw(@PathParam("UsernameAccount") String userNameAccount, 
+                                        MovementAccountModel movementAccountModel) throws MessageException {
+        AccountModel account = accountService.withdraw(userNameAccount, movementAccountModel);
+        return account;
     }
 }

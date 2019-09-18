@@ -17,8 +17,12 @@ import java.util.List;
 
 public class AccountRepository{
 
-    private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (UserName, TotalBalance, Currency) VALUES (?, ?, ?)";
-    private final static String SQL_GET_ACC_BY_ID = "SELECT * FROM Account";
+    private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (UserName, TotalBalance) VALUES (?, ?)";
+    private final static String SQL_GET_ACC = "SELECT * FROM Account";
+    private final static String SQL_GET_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ?";
+    private final static String SQL_UPDATE_ACC_BALANCE = "UPDATE Account SET TotalBalance = ? WHERE UserName = ? ";
+    private final static String SQL_LOCK_ACC_BY_ID = "SELECT * FROM Account WHERE AccountId = ? FOR UPDATE";
+
 
     public long createAccount(AccountModel account) throws MessageException {
         Connection conn = null;
@@ -29,7 +33,6 @@ public class AccountRepository{
             stmt = conn.prepareStatement(SQL_CREATE_ACCOUNT);
             stmt.setString(1, account.getUserName());
             stmt.setBigDecimal(2, account.getTotalBalance());
-            stmt.setString(3, account.getCurrency());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new MessageException("Account Cannot be created");
@@ -56,15 +59,12 @@ public class AccountRepository{
         List<AccountModel> accounts = new ArrayList<AccountModel>();
         try {
             conn = H2DataFactory.getConnection();
-            stmt = conn.prepareStatement(SQL_GET_ACC_BY_ID);
+            stmt = conn.prepareStatement(SQL_GET_ACC);
             resultSet = stmt.executeQuery();
-            // System.out.println(resultSet.getLong("AccountId") + "*********resultSet.getLong(AccountId)***********");
             while (resultSet.next()) {
-// System.out.println(resultSet.getLong("AccountId") + resultSet.getString("UserName") + resultSet.getBigDecimal("TotalBalance") + resultSet.getString("Currency"));
 
-				AccountModel account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"),
-                        resultSet.getString("Currency"));
-                
+				AccountModel account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"));
+
                 accounts.add(account);
             }
 			return accounts;
@@ -73,6 +73,66 @@ public class AccountRepository{
 			throw new MessageException("getAccountById(): Error reading account data", e);
 		} finally {
 			DbUtils.closeQuietly(conn, stmt, resultSet);
+		}
+    }
+
+    
+    public AccountModel getAccount(String userNameAccount) throws MessageException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        AccountModel account = null;
+        try {
+            conn = H2DataFactory.getConnection();
+            stmt = conn.prepareStatement(SQL_GET_ACC_BY_ID);
+            stmt.setString(1, userNameAccount);
+            resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                System.out.println(resultSet);
+				account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"));
+            }
+			return account;
+		} catch (SQLException e) {
+            System.out.println(e);
+			throw new MessageException("getAccountById(): Error reading account data", e);
+		} finally {
+			DbUtils.closeQuietly(conn, stmt, resultSet);
+		}
+    }
+
+
+    public AccountModel updateTotalBalance(String userNameAccount, BigDecimal amount) throws MessageException {
+        Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet resultSet = null;
+        int updateCount = -1;
+        AccountModel account = null;
+
+		try {
+
+			conn = H2DataFactory.getConnection();
+			stmt = conn.prepareStatement(SQL_UPDATE_ACC_BALANCE);
+			stmt.setBigDecimal(1, amount);
+			stmt.setString(2, userNameAccount);
+            updateCount = stmt.executeUpdate();
+            System.out.println(updateCount);
+            conn.commit();
+            
+
+            stmt = conn.prepareStatement(SQL_GET_ACC_BY_ID);
+			stmt.setString(1, userNameAccount);
+            resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+				account = new AccountModel(resultSet.getLong("AccountId"), resultSet.getString("UserName"), resultSet.getBigDecimal("TotalBalance"));
+            }
+			return account;
+		}  catch (SQLException e) {
+            System.out.println(e);
+			throw new MessageException("getAccountById(): Error reading account data", e);
+		} finally {
+			DbUtils.closeQuietly(conn);
+			DbUtils.closeQuietly(resultSet);
+			DbUtils.closeQuietly(stmt);
 		}
     }
 
