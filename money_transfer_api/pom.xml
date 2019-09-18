@@ -101,6 +101,7 @@
             <version>4.5.2</version>
             <scope>test</scope>
         </dependency>
+        
 
     </dependencies>
     <build>
@@ -139,6 +140,11 @@
                 <configuration>
                     <mainClass>com.money_transfer_api.app.ApplicationConfig</mainClass>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.6.0.1398</version>
             </plugin>
         </plugins>
     </build>
