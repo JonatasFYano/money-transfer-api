@@ -35,7 +35,7 @@ public class AccountRepository{
             stmt.setBigDecimal(2, account.getTotalBalance());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
-                throw new MessageException("Account Cannot be created");
+                throw new MessageException("Account Cannot be created ");
             }
             generatedKeys = stmt.getGeneratedKeys();
             if (generatedKeys.next()) {

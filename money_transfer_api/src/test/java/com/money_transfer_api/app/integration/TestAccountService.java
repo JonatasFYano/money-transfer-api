@@ -87,8 +87,8 @@ public class TestAccountService extends TestService{
         request.setHeader("Content-type", "application/json");
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
-
+        
         int statusCode = response.getStatusLine().getStatusCode();
-        assertTrue(statusCode == 200);
+        assertTrue(statusCode == 201);
     }
 }
