@@ -111,15 +111,15 @@ To execute the tests you will need, with a Maven command, to run:
 
 It is also possible to download a docker image from Dockerhub witch is generated whenever the CI pipeline is triggered. To do that, run:
 
-	```docker pull jonatasfyano/money-transfer-api:latest```
+   ```docker pull jonatasfyano/money-transfer-api:latest```
 
 This will download the image and to run the container with this project application execute:
 
-	```docker run -d -p 8001:8001 jonatasfyano/money-transfer-api:latest```
+   ```docker run -d -p 8001:8001 jonatasfyano/money-transfer-api:latest```
 
 To make sure the application is running properly you can make a GET request to the /account endpoint:
 
-	```curl http://localhost:8001/account```
+   ```curl http://localhost:8001/account```
 
 ## Contributing
 
