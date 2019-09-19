@@ -41,7 +41,6 @@ All the platforms, technologies, frameworks and libraries which were used at the
 
 - Java 8  
 - Maven 3.6.2
-- Log4j 1.2.17
 - JUnit 4.12
 - H2 in-memory Database 1.4.192
 - Sonarcloud
@@ -67,9 +66,8 @@ All the developed and available RESTful API Services, HTTP Status Codes and Docu
 | CODE 	| STATUS             	| MEANING                 	|
 |-------------	|------------------	|-----------------------	|
 | 200         	| OK 	| The request has succeeded 	|
-| 204         	| OK 	| The server could not find any content  	|
+| 204         	| NO CONTENT 	| The server could not find any content  	|
 | 400      	    | BAD REQUEST    	| The request could not be understood by the server        	|
-| 404         	| NOT FOUND     	| The requested resource cannot be found    	|
 | 500        	| INTERNAL SERVER ERROR   	| The server encountered an unexpected condition         	|
 
 ### Swagger Documentation
@@ -92,7 +90,7 @@ Since this project is built using Maven, you will need to execute with a Maven c
 
    ```mvn clean package```
 
-And then execute:
+And then, to run the application just execute:
 
    ```mvn java:exec```
 
@@ -108,6 +106,20 @@ To execute the tests you will need, with a Maven command, to run:
 
    ```mvn clean test```
 
+
+### Docker Image
+
+It is also possible to download a docker image from Dockerhub witch is generated whenever the CI pipeline is triggered. To do that, run:
+
+	```docker pull jonatasfyano/money-transfer-api:latest```
+
+This will download the image and to run the container with this project application execute:
+
+	```docker run -d -p 8001:8001 jonatasfyano/money-transfer-api:latest```
+
+To make sure the application is running properly you can make a GET request to the /account endpoint:
+
+	```curl http://localhost:8001/account```
 
 ## Contributing
 
