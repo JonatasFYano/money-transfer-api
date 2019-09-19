@@ -1,13 +1,9 @@
 package com.money_transfer_api.app.controller;
 
-import org.apache.log4j.Logger;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import java.net.URI;
@@ -21,8 +17,6 @@ import com.money_transfer_api.app.model.AccountModel;
 import com.money_transfer_api.app.model.MovementAccountModel;
 import com.money_transfer_api.app.service.AccountService;
 import com.money_transfer_api.app.exception.MessageException;
-
-import java.util.List;
 
 
 /**
@@ -40,16 +34,16 @@ public class AccountController {
     @Path("/create")
     public Response createAccount(AccountModel account) throws MessageException, URISyntaxException {
 
-        long accountId = accountService.createAccount(account);
-        URI u = new URI("localhost:8001");
+        accountService.createAccount(account);
+        URI u = new URI("localhost:8001/account");
         return Response.created(u).build();
     }
 
     @GET
     @Path("/")
-    public Response getAllAccounts() throws MessageException, URISyntaxException, IOException {
+    public Response getAllAccounts() throws MessageException, IOException {
         List<AccountModel> accounts = accountService.getAllAccounts();
-        if(accounts == null || accounts.size() == 0){
+        if(accounts == null || accounts.isEmpty()){
             return Response.noContent().build();
         }
         else{
@@ -60,7 +54,7 @@ public class AccountController {
 
     @GET
     @Path("/{UsernameAccount}")
-    public Response getAccount(@PathParam("UsernameAccount") String userNameAccount) throws MessageException, URISyntaxException, IOException {
+    public Response getAccount(@PathParam("UsernameAccount") String userNameAccount) throws MessageException, IOException {
         AccountModel account = accountService.getAccount(userNameAccount);
         if(account == null){
             return Response.noContent().build();
@@ -73,7 +67,7 @@ public class AccountController {
     @PUT
     @Path("/{UsernameAccount}/deposit")
     public Response deposit(@PathParam("UsernameAccount") String userNameAccount, 
-                                        MovementAccountModel movementAccountModel) throws MessageException, URISyntaxException, IOException {
+                                        MovementAccountModel movementAccountModel) throws MessageException , IOException {
         AccountModel account = accountService.deposit(userNameAccount, movementAccountModel);
         if(account == null){
             return Response.status(Status.BAD_REQUEST).build();
@@ -85,7 +79,7 @@ public class AccountController {
     @PUT
     @Path("/{UsernameAccount}/withdraw")
     public Response withdraw(@PathParam("UsernameAccount") String userNameAccount, 
-                                        MovementAccountModel movementAccountModel) throws MessageException, URISyntaxException, IOException {
+                                        MovementAccountModel movementAccountModel) throws MessageException , IOException {
         AccountModel account = accountService.withdraw(userNameAccount, movementAccountModel);
         if(account == null){
             return Response.status(Status.BAD_REQUEST).build();

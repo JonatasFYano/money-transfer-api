@@ -5,7 +5,6 @@ import com.money_transfer_api.app.model.AccountModel;
 import com.money_transfer_api.app.exception.MessageException;
 
 import org.apache.commons.dbutils.DbUtils;
-import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -17,11 +16,11 @@ import java.util.List;
 
 public class AccountRepository{
 
-    private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (UserName, TotalBalance) VALUES (?, ?)";
-    private final static String SQL_GET_ACC = "SELECT * FROM Account";
-    private final static String SQL_GET_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ?";
-    private final static String SQL_UPDATE_ACC_BALANCE = "UPDATE Account SET TotalBalance = ? WHERE UserName = ? ";
-    private final static String SQL_LOCK_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ? FOR UPDATE";
+    private static final String SQL_CREATE_ACCOUNT = "INSERT INTO Account (UserName, TotalBalance) VALUES (?, ?)";
+    private static final String SQL_GET_ACC = "SELECT * FROM Account";
+    private static final String SQL_GET_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ?";
+    private static final String SQL_UPDATE_ACC_BALANCE = "UPDATE Account SET TotalBalance = ? WHERE UserName = ? ";
+    private static final String SQL_LOCK_ACC_BY_ID = "SELECT * FROM Account WHERE UserName = ? FOR UPDATE";
 
 
     public long createAccount(AccountModel account) throws MessageException {
@@ -44,7 +43,7 @@ public class AccountRepository{
                 throw new MessageException("Account Cannot be created");
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.print(e);
             throw new MessageException("createAccount(): Error creating user account " + account, e);
         } finally {
             DbUtils.closeQuietly(conn, stmt, generatedKeys);
@@ -56,7 +55,7 @@ public class AccountRepository{
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
-        List<AccountModel> accounts = new ArrayList<AccountModel>();
+        List<AccountModel> accounts = new ArrayList<>();
         try {
             conn = H2DataFactory.getConnection();
             stmt = conn.prepareStatement(SQL_GET_ACC);
@@ -102,8 +101,8 @@ public class AccountRepository{
 
     public AccountModel updateTotalBalance(String userNameAccount, BigDecimal amount) throws MessageException {
         Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
         int updateCount = -1;
         AccountModel account = null;
 		try {
@@ -137,7 +136,7 @@ public class AccountRepository{
 		ResultSet rs = null;
 		AccountModel fromAccount = null;
         AccountModel toAccount = null;
-        List<AccountModel> accounts = new ArrayList<AccountModel>();
+        List<AccountModel> accounts = new ArrayList<>();
 
 		try {
 			conn = H2DataFactory.getConnection();
