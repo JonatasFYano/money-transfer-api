@@ -3,7 +3,6 @@ package com.money_transfer_api.app.repository;
 import com.money_transfer_api.app.service.AccountService;
 
 import org.apache.commons.dbutils.DbUtils;
-import org.apache.log4j.Logger;
 import org.h2.tools.RunScript;
 
 import java.io.FileNotFoundException;
@@ -26,8 +25,6 @@ public class H2DataFactory{
 	private static final String h2_user = utils.getProperty("h2_user");
 	private static final String h2_password = utils.getProperty("h2_password");
 
-	private final AccountService accountService = new AccountService();
-
 	public H2DataFactory() {
 		DbUtils.loadDriver(h2_driver);
 	}
@@ -42,11 +39,9 @@ public class H2DataFactory{
 		try {
 			conn = getConnection();
 			RunScript.execute(conn, new FileReader("src/main/resources/demo.sql"));
-		} catch (SQLException e) {
+		} catch (SQLException|FileNotFoundException e) {
 			throw new RuntimeException(e);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		} finally {
+		}finally {
 			DbUtils.closeQuietly(conn);
 		}
 	}

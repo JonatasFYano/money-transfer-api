@@ -2,7 +2,6 @@ package com.money_transfer_api.app.service;
 
 import com.money_transfer_api.app.model.AccountModel;
 import com.money_transfer_api.app.model.MovementAccountModel;
-import com.money_transfer_api.app.repository.H2DataFactory;
 import com.money_transfer_api.app.exception.MessageException;
 import com.money_transfer_api.app.repository.AccountRepository;
 
