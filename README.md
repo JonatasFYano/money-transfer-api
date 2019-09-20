@@ -72,7 +72,7 @@ All the developed and available RESTful API Services, HTTP Status Codes and Docu
 
 ### Swagger Documentation
 
-Link to the Money Transfer Swagger Documentation can be found [here]([https://app.swaggerhub.com/apis-docs/JonatasFYano/money_transfer_api/1.0.0#/Transaction]). 
+Link to the Money Transfer Swagger Documentation can be found [here](https://app.swaggerhub.com/apis-docs/JonatasFYano/money_transfer_api/1.0.0#/Transaction). 
 
 ## Getting Started 
 
@@ -109,7 +109,7 @@ To execute the tests you will need, with a Maven command, to run:
 
 ### Docker Image
 
-It is also possible to download a docker image from Dockerhub witch is generated whenever the CI pipeline is triggered. To do that, run:
+It is also possible to download a docker image from [Dockerhub](https://hub.docker.com/r/jonatasfyano/money-transfer-api) witch is generated whenever the CI pipeline is triggered. To do that, run:
 
    ```docker pull jonatasfyano/money-transfer-api:latest```
 
